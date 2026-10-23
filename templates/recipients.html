@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Registered Recipients</h2>
+    <p>View all recipients registered in OrganLink.</p>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Blood Group</th>
+                <th>Hospital ID</th>
+                <th>Urgency</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for recipient in recipients %}
+            <tr>
+                <td>{{ recipient.recipient_id }}</td>
+                <td>{{ recipient.name }}</td>
+                <td>{{ recipient.blood_group }}</td>
+                <td>{{ recipient.hospital_id }}</td>
+                <td>{{ recipient.urgency_level }}</td>
+                <td>{{ recipient.status }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No recipients found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

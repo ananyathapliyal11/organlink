@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+
+    <h2>Create a Request</h2>
+    <p>Register a new blood or organ request for a recipient.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('requests.add_request') }}">
+
+        <div class="mb-3">
+            <label for="recipient_id" class="form-label">Recipient</label>
+            <select name="recipient_id" id="recipient_id"
+                    class="form-select" required>
+                <option value="">Select recipient</option>
+                {% for recipient in recipients %}
+                    <option value="{{ recipient.recipient_id }}">
+                        {{ recipient.name }} ({{ recipient.blood_group }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="request_type" class="form-label">Request Type</label>
+            <select name="request_type" id="request_type"
+                    class="form-select" required>
+                <option value="">Select request type</option>
+                <option value="blood">Blood</option>
+                <option value="organ">Organ</option>
+            </select>
+        </div>
+
+        <div class="mb-3" id="organ-field" style="display: none;">
+            <label for="organ_type_id" class="form-label">Organ Type</label>
+            <select name="organ_type_id" id="organ_type_id"
+                    class="form-select">
+                <option value="">Select organ type</option>
+                {% for organ in organ_types %}
+                    <option value="{{ organ.organ_type_id }}">
+                        {{ organ.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="urgency_level" class="form-label">
+                Urgency Level (1–5)
+            </label>
+            <select name="urgency_level" id="urgency_level"
+                    class="form-select" required>
+                <option value="1">1 - Lowest</option>
+                <option value="2">2 - Low</option>
+                <option value="3" selected>3 - Normal</option>
+                <option value="4">4 - High</option>
+                <option value="5">5 - Highest</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Create Request
+        </button>
+
+        <a href="{{ url_for('requests.view_requests') }}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+</div>
+
+<script>
+    const requestType = document.getElementById("request_type");
+    const organField = document.getElementById("organ-field");
+    const organSelect = document.getElementById("organ_type_id");
+
+    function toggleOrganField() {
+        const isOrgan = requestType.value === "organ";
+
+        organField.style.display = isOrgan ? "block" : "none";
+        organSelect.required = isOrgan;
+
+        if (!isOrgan) {
+            organSelect.value = "";
+        }
+    }
+
+    requestType.addEventListener("change", toggleOrganField);
+    toggleOrganField();
+</script>
+{% endblock %}

@@ -1,0 +1,167 @@
+
+{% extends "base.html" %}
+
+{% block title %}Record Donation | OrganLink{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Donation Management</h2>
+        <p class="text-muted mb-0">Record donations and track inventory units.</p>
+    </div>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+        Back to Dashboard
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header text-white" style="background:#8b1e2d;">
+        <h5 class="mb-0">Record a New Donation</h5>
+    </div>
+
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('donations') }}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Select Donor</label>
+                    <select name="donor_id" class="form-select" required>
+                        <option value="">Choose an active donor</option>
+                        {% for donor in donors %}
+                            <option value="{{ donor.donor_id }}">
+                                {{ donor.name }} — {{ donor.blood_group }}
+                                ({{ donor.donor_type }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if not donors %}
+                        <small class="text-muted">
+                            No active donors are available for your hospital.
+                        </small>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Donation Type</label>
+                    <select name="donation_type" id="donation_type"
+                            class="form-select" required>
+                        <option value="">Choose donation type</option>
+                        <option value="blood">Blood</option>
+                        <option value="organ">Organ</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6" id="organ_type_container" hidden>
+                    <label class="form-label">Organ Type</label>
+                    <select name="organ_type_id" id="organ_type_id"
+                            class="form-select">
+                        <option value="">Choose organ type</option>
+                        {% for organ in organ_types %}
+                            <option value="{{ organ.organ_type_id }}">
+                                {{ organ.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn text-white"
+                            style="background:#8b1e2d;"
+                            {% if not donors %}disabled{% endif %}>
+                        Record Donation
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">Donation History</h5>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Donation ID</th>
+                    <th>Donor</th>
+                    <th>Type</th>
+                    <th>Organ</th>
+                    <th>Hospital</th>
+                    <th>Recorded At</th>
+                    <th>Inventory Unit</th>
+                    <th>Inventory Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donation in donations %}
+                    <tr>
+                        <td>{{ donation.donation_id }}</td>
+                        <td>{{ donation.donor_name }}</td>
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                {{ donation.donation_type|title }}
+                            </span>
+                        </td>
+                        <td>{{ donation.organ_name or 'N/A' }}</td>
+                        <td>{{ donation.hospital_name }}</td>
+                        <td>{{ donation.donation_date }}</td>
+                        <td>{{ donation.unit_id }}</td>
+                        <td>
+                            {% if donation.unit_status == 'available' %}
+                                <span class="badge bg-success">Available</span>
+                            {% elif donation.unit_status == 'reserved' %}
+                                <span class="badge bg-warning text-dark">Reserved</span>
+                            {% elif donation.unit_status == 'used' %}
+                                <span class="badge bg-secondary">Used</span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    {{ donation.unit_status|title }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No donations recorded yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const donationType = document.getElementById("donation_type");
+    const organContainer = document.getElementById("organ_type_container");
+    const organSelect = document.getElementById("organ_type_id");
+
+    function updateOrganField() {
+        const isOrgan = donationType.value === "organ";
+        organContainer.hidden = !isOrgan;
+        organSelect.required = isOrgan;
+
+        if (!isOrgan) {
+            organSelect.value = "";
+        }
+    }
+
+    donationType.addEventListener("change", updateOrganField);
+    updateOrganField();
+</script>
+{% endblock %}

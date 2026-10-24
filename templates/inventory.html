@@ -1,0 +1,172 @@
+
+{% extends "base.html" %}
+
+{% block title %}Inventory Management | OrganLink{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Inventory Management</h2>
+        <p class="text-muted mb-0">
+            Track donated blood and organs, availability, and expiry.
+        </p>
+    </div>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+        Dashboard
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header text-white" style="background:#8b1e2d;">
+        <h5 class="mb-0">Filter Inventory</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('inventory') }}">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Blood Group</label>
+                    <select name="blood_group" class="form-select">
+                        <option value="">All blood groups</option>
+                        {% for group in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %}
+                            <option value="{{ group }}"
+                                {% if selected_blood_group == group %}selected{% endif %}>
+                                {{ group }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Unit Type</label>
+                    <select name="unit_type" class="form-select">
+                        <option value="">All types</option>
+                        <option value="blood"
+                            {% if selected_unit_type == 'blood' %}selected{% endif %}>
+                            Blood
+                        </option>
+                        <option value="organ"
+                            {% if selected_unit_type == 'organ' %}selected{% endif %}>
+                            Organ
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Inventory Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All statuses</option>
+                        {% for s in ['available', 'reserved', 'used', 'expired'] %}
+                            <option value="{{ s }}"
+                                {% if selected_status == s %}selected{% endif %}>
+                                {{ s|title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {% if session.get('role') == 'admin' %}
+                <div class="col-md-3">
+                    <label class="form-label">Hospital</label>
+                    <select name="hospital_id" class="form-select">
+                        <option value="">All hospitals</option>
+                        {% for hospital in hospitals %}
+                            <option value="{{ hospital.hospital_id }}"
+                                {% if selected_hospital_id|string == hospital.hospital_id|string %}selected{% endif %}>
+                                {{ hospital.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-danger">
+                        Apply Filters
+                    </button>
+                    <a href="{{ url_for('inventory') }}"
+                       class="btn btn-outline-secondary">
+                        Clear Filters
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white d-flex justify-content-between">
+        <h5 class="mb-0">Inventory Units</h5>
+        <span class="badge bg-secondary">{{ units|length }} units</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Unit ID</th>
+                    <th>Donor</th>
+                    <th>Type</th>
+                    <th>Blood Group</th>
+                    <th>Organ</th>
+                    <th>Hospital</th>
+                    <th>Collected</th>
+                    <th>Expires</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for unit in units %}
+                <tr>
+                    <td>{{ unit.unit_id }}</td>
+                    <td>{{ unit.donor_name }}</td>
+                    <td>{{ unit.unit_type|title }}</td>
+                    <td>{{ unit.blood_group }}</td>
+                    <td>{{ unit.organ_name or 'N/A' }}</td>
+                    <td>{{ unit.hospital_name }}</td>
+                    <td>{{ unit.collected_at }}</td>
+                    <td>
+                        {{ unit.expiry_at or 'Not specified' }}
+                        {% if unit.expiry_label == 'Expired' %}
+                            <br><span class="badge bg-danger">Expired</span>
+                        {% elif unit.expiry_label == 'Expiring Soon' %}
+                            <br><span class="badge bg-warning text-dark">
+                                Expiring Soon
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if unit.expiry_label == 'Expired' %}
+                            <span class="badge bg-danger">
+                                Expired
+                            </span>
+                        {% elif unit.status == 'available' %}
+                            <span class="badge bg-success">Available</span>
+                        {% elif unit.status == 'reserved' %}
+                            <span class="badge bg-warning text-dark">Reserved</span>
+                        {% elif unit.status == 'used' %}
+                            <span class="badge bg-secondary">Used</span>
+                        {% else %}
+                            <span class="badge bg-danger">
+                                {{ unit.status|title }}
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-4">
+                        No inventory units match your filters.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

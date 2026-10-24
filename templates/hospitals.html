@@ -1,0 +1,106 @@
+
+{% extends "base.html" %}
+
+{% block title %}Hospital Management | OrganLink{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Hospital Management</h2>
+    <p class="text-muted">View and manage registered hospitals.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if session.get("role") == "admin" %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Add New Hospital</h5>
+
+            <form method="POST" action="{{ url_for('add_hospital') }}">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Hospital Name</label>
+                        <input type="text" name="name"
+                               class="form-control" maxlength="100" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city"
+                               class="form-control" maxlength="60" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Contact</label>
+                        <input type="text" name="contact"
+                               class="form-control" maxlength="20">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Type</label>
+                        <select name="type" class="form-select" required>
+                            <option value="hospital">Hospital</option>
+                            <option value="blood_bank">Blood Bank</option>
+                            <option value="transplant_center">
+                                Transplant Center
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-danger mt-3">
+                    Add Hospital
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Registered Hospitals</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>City</th>
+                            <th>Contact</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hospital in hospitals %}
+                        <tr>
+                            <td>{{ hospital.hospital_id }}</td>
+                            <td>{{ hospital.name }}</td>
+                            <td>{{ hospital.city }}</td>
+                            <td>{{ hospital.contact or "—" }}</td>
+                            <td>{{ hospital.type | replace("_", " ") | title }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                No hospitals found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}"
+       class="btn btn-outline-secondary mt-3">
+        Back to Dashboard
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | OrganLink{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Welcome, {{ session["username"] }}!</h1>
+    <p>
+        Role: <strong>{{ session["role"] }}</strong>
+    </p>
+
+    <p>Welcome to the OrganLink dashboard.</p>
+    <a href="{{ url_for('hospitals') }}" class="btn btn-danger mt-3">
+        Manage Hospitals
+    </a>
+    <a href="{{ url_for('donors') }}" class="btn btn-danger mt-3">
+        Manage Donors
+    </a>
+    <a href="{{ url_for('donations') }}" class="btn btn-danger">
+        Manage Donations & Inventory
+    </a>
+    <a href="{{ url_for('inventory') }}" class="btn btn-outline-danger">
+        View Inventory
+    </a>
+    <a href="{{ url_for('reports') }}" class="btn btn-outline-danger">
+        Reports Dashboard
+    </a>
+    <a href="{{ url_for('audit_log') }}" class="btn btn-outline-danger">
+        Audit Trail
+    </a>
+    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+        Logout
+    </a>
+</div>
+{% endblock %}

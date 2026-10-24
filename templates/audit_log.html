@@ -1,0 +1,71 @@
+
+{% extends "base.html" %}
+
+{% block title %}Audit Trail | OrganLink{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Inventory Audit Trail</h2>
+        <p class="text-muted mb-0">
+            Track recorded inventory status changes.
+        </p>
+    </div>
+    <a href="{{ url_for('dashboard') }}"
+       class="btn btn-outline-secondary">
+        Back to Dashboard
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<div class="card shadow-sm border-0">
+    <div class="card-header text-white" style="background:#8b1e2d;">
+        <h5 class="mb-0">Status Change History</h5>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Log ID</th>
+                    <th>Unit ID</th>
+                    <th>Hospital</th>
+                    <th>Previous Status</th>
+                    <th>New Status</th>
+                    <th>Date &amp; Time</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.log_id }}</td>
+                    <td>{{ log.unit_id }}</td>
+                    <td>{{ log.hospital_name }}</td>
+                    <td>
+                        {{ log.old_status or 'N/A' }}
+                    </td>
+                    <td>
+                        <strong>{{ log.new_status or 'N/A' }}</strong>
+                    </td>
+                    <td>{{ log.changed_at }}</td>
+                    <td>{{ log.remarks or '—' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7"
+                        class="text-center text-muted py-4">
+                        No audit records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

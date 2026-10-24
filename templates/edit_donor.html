@@ -1,0 +1,107 @@
+
+{% extends "base.html" %}
+
+{% block title %}Edit Donor | OrganLink{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Donor</h2>
+    <p class="text-muted">Update the donor's registered information.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="POST">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Full Name</label>
+                        <input name="name" class="form-control"
+                               maxlength="100" value="{{ donor.name }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" name="dob" class="form-control"
+                               value="{{ donor.dob }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Gender</label>
+                        <select name="gender" class="form-select" required>
+                            {% for item, label in [("M","Male"),("F","Female"),("O","Other")] %}
+                                <option value="{{ item }}"
+                                    {% if donor.gender == item %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Blood Group</label>
+                        <select name="blood_group" class="form-select" required>
+                            {% for group in ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] %}
+                                <option value="{{ group }}"
+                                    {% if donor.blood_group == group %}selected{% endif %}>
+                                    {{ group }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Donor Type</label>
+                        <select name="donor_type" class="form-select" required>
+                            {% for item in ["blood", "organ", "both"] %}
+                                <option value="{{ item }}"
+                                    {% if donor.donor_type == item %}selected{% endif %}>
+                                    {{ item | title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input name="phone" class="form-control"
+                               maxlength="15" value="{{ donor.phone or '' }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input name="city" class="form-control"
+                               maxlength="60" value="{{ donor.city }}" required>
+                    </div>
+
+                    {% if session.get("role") == "admin" %}
+                    <div class="col-md-12">
+                        <label class="form-label">Hospital</label>
+                        <select name="hospital_id" class="form-select" required>
+                            {% for hospital in hospitals %}
+                                <option value="{{ hospital.hospital_id }}"
+                                    {% if donor.hospital_id == hospital.hospital_id %}selected{% endif %}>
+                                    {{ hospital.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-danger mt-4">
+                    Save Changes
+                </button>
+                <a href="{{ url_for('donors') }}"
+                   class="btn btn-outline-secondary mt-4">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,33 +4,395 @@
 {% block title %}Dashboard | OrganLink{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1>Welcome, {{ session["username"] }}!</h1>
-    <p>
-        Role: <strong>{{ session["role"] }}</strong>
-    </p>
+<section class="dashboard-hero mb-5">
+    <div class="hero-content">
+        <span class="hero-eyebrow">DONOR MANAGEMENT &amp; TRACEABILITY</span>
+        <h1>Every donation.<br><span>Every connection.</span></h1>
+        <p>
+            Welcome to OrganLink, {{ session["username"] }}.
+            Manage donors, track available inventory, and coordinate
+            requests through one connected platform.
+        </p>
 
-    <p>Welcome to the OrganLink dashboard.</p>
-    <a href="{{ url_for('hospitals') }}" class="btn btn-danger mt-3">
-        Manage Hospitals
-    </a>
-    <a href="{{ url_for('donors') }}" class="btn btn-danger mt-3">
-        Manage Donors
-    </a>
-    <a href="{{ url_for('donations') }}" class="btn btn-danger">
-        Manage Donations & Inventory
-    </a>
-    <a href="{{ url_for('inventory') }}" class="btn btn-outline-danger">
-        View Inventory
-    </a>
-    <a href="{{ url_for('reports') }}" class="btn btn-outline-danger">
-        Reports Dashboard
-    </a>
-    <a href="{{ url_for('audit_log') }}" class="btn btn-outline-danger">
-        Audit Trail
-    </a>
-    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
-        Logout
-    </a>
+        <div class="hero-meta">
+            <span class="role-pill">
+                {{ session["role"]|capitalize }} workspace
+            </span>
+            <span class="hero-note">Your work, connected to a greater purpose.</span>
+        </div>
+    </div>
+
+    <div class="hero-decoration" aria-hidden="true">
+        <div class="hero-circle circle-one"></div>
+        <div class="hero-circle circle-two"></div>
+        <div class="hero-symbol">O</div>
+        <div class="hero-leaf">✳</div>
+    </div>
+</section>
+
+<div class="section-heading mb-4">
+    <div>
+        <span class="section-eyebrow">WORKSPACE</span>
+        <h2>Manage OrganLink</h2>
+        <p>Choose a section to get started.</p>
+    </div>
 </div>
+
+<div class="row g-4">
+
+    {% if session["role"] == "admin" %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('hospitals') }}" class="module-card">
+            <div class="module-icon icon-moss">⌂</div>
+            <div class="module-card-body">
+                <h3>Hospitals</h3>
+                <p>Manage registered hospitals and their information.</p>
+                <span class="module-action">Manage hospitals <span>→</span></span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('donors') }}" class="module-card">
+            <div class="module-icon icon-beige">♡</div>
+            <div class="module-card-body">
+                <h3>Donors</h3>
+                <p>Register donors, search records, and manage donor status.</p>
+                <span class="module-action">Manage donors <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('donations') }}" class="module-card">
+            <div class="module-icon icon-rose">✳</div>
+            <div class="module-card-body">
+                <h3>Donations</h3>
+                <p>Record new donations and add units to inventory.</p>
+                <span class="module-action">Record donation <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('inventory') }}" class="module-card">
+            <div class="module-icon icon-moss">▤</div>
+            <div class="module-card-body">
+                <h3>Inventory</h3>
+                <p>Review stock, availability, and expiry information.</p>
+                <span class="module-action">View inventory <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('recipients.view_recipients') }}" class="module-card">
+            <div class="module-icon icon-beige">♧</div>
+            <div class="module-card-body">
+                <h3>Recipients</h3>
+                <p>Manage recipient details and search registered records.</p>
+                <span class="module-action">Manage recipients <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('requests.view_requests') }}" class="module-card">
+            <div class="module-icon icon-rose">⇄</div>
+            <div class="module-card-body">
+                <h3>Requests</h3>
+                <p>Create and review requests for needed units.</p>
+                <span class="module-action">View requests <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('requests.view_waitlist') }}" class="module-card">
+            <div class="module-icon icon-beige">≡</div>
+            <div class="module-card-body">
+                <h3>Waitlist</h3>
+                <p>Review requests that are still awaiting fulfilment.</p>
+                <span class="module-action">View waitlist <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('reports') }}" class="module-card">
+            <div class="module-icon icon-rose">▥</div>
+            <div class="module-card-body">
+                <h3>Supply Reports</h3>
+                <p>Review donor, donation, and inventory statistics.</p>
+                <span class="module-action">View reports <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('requests.demand_reports') }}" class="module-card">
+            <div class="module-icon icon-moss">▦</div>
+            <div class="module-card-body">
+                <h3>Demand Reports</h3>
+                <p>Review request totals, urgency, and demand status.</p>
+                <span class="module-action">View demand reports <span>→</span></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{{ url_for('audit_log') }}" class="module-card">
+            <div class="module-icon icon-beige">◷</div>
+            <div class="module-card-body">
+                <h3>Audit Trail</h3>
+                <p>Track inventory status changes and recorded activity.</p>
+                <span class="module-action">View audit trail <span>→</span></span>
+            </div>
+        </a>
+    </div>
+</div>
+
+<style>
+    .dashboard-hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 330px;
+        display: flex;
+        align-items: center;
+        background: var(--dark-green);
+        border-radius: 26px;
+        padding: 52px 58px;
+        color: var(--beige);
+        box-shadow: 0 15px 40px rgba(10, 51, 35, 0.13);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 690px;
+    }
+
+    .hero-eyebrow,
+    .section-eyebrow {
+        display: inline-block;
+        color: var(--moss-green);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: clamp(2.5rem, 5vw, 4.25rem);
+        font-weight: 800;
+        letter-spacing: -2.5px;
+        line-height: 1.08;
+        margin-bottom: 19px;
+    }
+
+    .dashboard-hero h1 span {
+        color: var(--moss-green);
+    }
+
+    .dashboard-hero p {
+        max-width: 570px;
+        color: rgba(247, 244, 213, 0.78);
+        font-size: 1.04rem;
+        line-height: 1.8;
+    }
+
+    .hero-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 25px;
+    }
+
+    .role-pill {
+        background: var(--moss-green);
+        color: var(--dark-green);
+        border-radius: 30px;
+        padding: 8px 15px;
+        font-size: 0.84rem;
+        font-weight: 800;
+    }
+
+    .hero-note {
+        color: rgba(247, 244, 213, 0.67);
+        font-size: 0.88rem;
+    }
+
+    .hero-decoration {
+        position: absolute;
+        right: 4%;
+        top: 0;
+        width: 340px;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .hero-circle {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(131, 153, 88, 0.3);
+    }
+
+    .circle-one {
+        width: 300px;
+        height: 300px;
+        right: 0;
+        top: 15px;
+    }
+
+    .circle-two {
+        width: 220px;
+        height: 220px;
+        right: 40px;
+        top: 55px;
+        background: rgba(131, 153, 88, 0.09);
+    }
+
+    .hero-symbol {
+        position: absolute;
+        right: 95px;
+        top: 88px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 115px;
+        font-weight: 800;
+        color: rgba(247, 244, 213, 0.13);
+    }
+
+    .hero-leaf {
+        position: absolute;
+        right: 32px;
+        bottom: 34px;
+        color: var(--rosy-brown);
+        font-size: 52px;
+    }
+
+    .section-heading h2 {
+        color: var(--dark-green);
+        font-size: 1.85rem;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+        margin-bottom: 8px;
+    }
+
+    .section-heading p {
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    .section-heading .section-eyebrow {
+        margin-bottom: 7px;
+    }
+
+    .module-card {
+        height: 100%;
+        min-height: 230px;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+        background: white;
+        padding: 25px;
+        border: 1px solid var(--card-border);
+        border-radius: 19px;
+        box-shadow: 0 5px 20px rgba(10, 51, 35, 0.035);
+        transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+    }
+
+    .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(10, 51, 35, 0.09);
+        border-color: var(--moss-green);
+        color: inherit;
+    }
+
+    .module-icon {
+        width: 49px;
+        height: 49px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        font-size: 1.65rem;
+        font-weight: 700;
+        margin-bottom: 21px;
+    }
+
+    .icon-moss {
+        background: rgba(131, 153, 88, 0.19);
+        color: var(--dark-green);
+    }
+
+    .icon-beige {
+        background: var(--beige);
+        color: var(--midnight-green);
+    }
+
+    .icon-rose {
+        background: rgba(211, 150, 140, 0.23);
+        color: #96584F;
+    }
+
+    .module-card h3 {
+        font-size: 1.18rem;
+        font-weight: 800;
+        color: var(--dark-green);
+        margin-bottom: 9px;
+    }
+
+    .module-card p {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        line-height: 1.65;
+        margin-bottom: 20px;
+    }
+
+    .module-action {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--midnight-green);
+        font-weight: 800;
+        font-size: 0.88rem;
+    }
+
+    .module-action span {
+        font-size: 1.2rem;
+        transition: transform 0.2s;
+    }
+
+    .module-card:hover .module-action span {
+        transform: translateX(4px);
+    }
+
+    @media (max-width: 767px) {
+        .dashboard-hero {
+            padding: 34px 25px;
+            min-height: 350px;
+        }
+
+        .dashboard-hero h1 {
+            letter-spacing: -1.4px;
+        }
+
+        .hero-decoration {
+            opacity: 0.3;
+            right: -190px;
+        }
+
+        .hero-note {
+            display: none;
+        }
+
+        .module-card {
+            min-height: 210px;
+        }
+    }
+</style>
 {% endblock %}

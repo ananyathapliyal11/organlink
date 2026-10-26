@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Request Waitlist | OrganLink{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Request Waitlist</h2>
+            <p class="text-muted mb-0">
+                Pending requests, prioritised by urgency and request date.
+            </p>
+        </div>
+        <a href="{{ url_for('requests.view_requests') }}"
+           class="btn btn-outline-secondary">
+            Back to Requests
+        </a>
+    </div>
+
+    <div class="alert alert-info">
+        Requests with higher urgency appear first. Older requests
+        appear first when urgency levels are equal.
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Request ID</th>
+                    <th>Recipient</th>
+                    <th>Request Type</th>
+                    <th>Organ Type</th>
+                    <th>Blood Group</th>
+                    <th>Urgency</th>
+                    <th>Request Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in waitlist %}
+                <tr>
+                    <td>{{ item.request_id }}</td>
+                    <td>{{ item.recipient_name }}</td>
+                    <td>{{ item.request_type|title }}</td>
+                    <td>{{ item.organ_name or 'N/A' }}</td>
+                    <td>{{ item.blood_group }}</td>
+                    <td>
+                        <span class="badge
+                            {% if item.urgency_level >= 4 %}
+                                bg-danger
+                            {% elif item.urgency_level == 3 %}
+                                bg-warning text-dark
+                            {% else %}
+                                bg-secondary
+                            {% endif %}">
+                            {{ item.urgency_level }}/5
+                        </span>
+                    </td>
+                    <td>{{ item.request_date }}</td>
+                    <td>
+                        <a href="{{ url_for(
+                            'requests.find_matches',
+                            request_id=item.request_id
+                        ) }}" class="btn btn-info btn-sm">
+                            Find Matches
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-3">
+                        No pending requests in the waitlist.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

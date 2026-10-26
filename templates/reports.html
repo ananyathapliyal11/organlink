@@ -1,0 +1,194 @@
+
+{% extends "base.html" %}
+
+{% block title %}Reports Dashboard | OrganLink{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Reports Dashboard</h2>
+        <p class="text-muted mb-0">
+            Overview of donors, donations and inventory.
+        </p>
+    </div>
+    <a href="{{ url_for('dashboard') }}"
+       class="btn btn-outline-secondary">
+        Back to Dashboard
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Total Donors</p>
+                <h2 class="fw-bold">{{ total_donors }}</h2>
+                <span class="text-muted">Registered donors</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Active Donors</p>
+                <h2 class="fw-bold text-success">{{ active_donors }}</h2>
+                <span class="text-muted">Currently active</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Total Donations</p>
+                <h2 class="fw-bold text-primary">{{ total_donations }}</h2>
+                <span class="text-muted">Recorded donations</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Available Units</p>
+                <h2 class="fw-bold text-success">
+                    {{ inventory_stats.available }}
+                </h2>
+                <span class="text-muted">Not expired</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Expired Units</p>
+                <h3 class="fw-bold text-danger">
+                    {{ inventory_stats.expired }}
+                </h3>
+                <p class="small text-muted mb-0">
+                    Includes units whose expiry time has passed.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Expiring Within 3 Days</p>
+                <h3 class="fw-bold text-warning">
+                    {{ inventory_stats.expiring_soon }}
+                </h3>
+                <p class="small text-muted mb-0">
+                    Available units approaching expiry.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Available Blood Inventory</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Blood Group</th>
+                            <th class="text-end">Available Units</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in blood_inventory %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-danger">
+                                    {{ item.blood_group }}
+                                </span>
+                            </td>
+                            <td class="text-end fw-bold">
+                                {{ item.unit_count }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2"
+                                class="text-center text-muted py-3">
+                                No available blood units.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Recent Donations</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Donor</th>
+                            <th>Type</th>
+                            <th>Hospital</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for donation in recent_donations %}
+                        <tr>
+                            <td>{{ donation.donation_id }}</td>
+                            <td>{{ donation.donor_name }}</td>
+                            <td>{{ donation.donation_type|title }}</td>
+                            <td>{{ donation.hospital_name }}</td>
+                            <td>{{ donation.donation_date }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5"
+                                class="text-center text-muted py-3">
+                                No donations recorded yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('inventory') }}"
+       class="btn btn-outline-danger">
+        View Full Inventory
+    </a>
+    <a href="{{ url_for('donations') }}"
+       class="btn btn-danger">
+        Manage Donations
+    </a>
+    <a href="{{ url_for('export_donations') }}"
+        class="btn btn-outline-success">
+            Download Donation Report (CSV)
+    </a>
+</div>
+{% endblock %}

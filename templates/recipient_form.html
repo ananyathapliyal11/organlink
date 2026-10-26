@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2>{{ "Edit Recipient" if editing else "Register a Recipient" }}</h2>
+
+    <p>
+        {{ "Update the recipient's details below." if editing
+           else "Enter the recipient's details below." }}
+    </p>
+
+    <form method="POST"
+          action="{{ url_for('recipients.edit_recipient', recipient_id=recipient.recipient_id) if editing else url_for('recipients.add_recipient') }}">
+
+        <!-- Full Name -->
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input
+                type="text"
+                name="name"
+                class="form-control"
+                value="{{ recipient.name if editing else '' }}"
+                required
+            >
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="mb-3">
+            <label class="form-label">Date of Birth</label>
+            <input
+                type="date"
+                name="dob"
+                class="form-control"
+                value="{{ recipient.dob.strftime('%Y-%m-%d') if editing else '' }}"
+                required
+            >
+        </div>
+
+        <!-- Gender -->
+        <div class="mb-3">
+            <label class="form-label">Gender</label>
+            <select name="gender" class="form-select" required>
+                <option value="">Select gender</option>
+                <option value="M" {% if editing and recipient.gender == 'M' %}selected{% endif %}>Male</option>
+                <option value="F" {% if editing and recipient.gender == 'F' %}selected{% endif %}>Female</option>
+                <option value="O" {% if editing and recipient.gender == 'O' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+
+        <!-- Blood Group -->
+        <div class="mb-3">
+            <label class="form-label">Blood Group</label>
+            <select name="blood_group" class="form-select" required>
+                <option value="">Select blood group</option>
+                <option value="A+" {% if editing and recipient.blood_group == 'A+' %}selected{% endif %}>A+</option>
+                <option value="A-" {% if editing and recipient.blood_group == 'A-' %}selected{% endif %}>A-</option>
+                <option value="B+" {% if editing and recipient.blood_group == 'B+' %}selected{% endif %}>B+</option>
+                <option value="B-" {% if editing and recipient.blood_group == 'B-' %}selected{% endif %}>B-</option>
+                <option value="AB+" {% if editing and recipient.blood_group == 'AB+' %}selected{% endif %}>AB+</option>
+                <option value="AB-" {% if editing and recipient.blood_group == 'AB-' %}selected{% endif %}>AB-</option>
+                <option value="O+" {% if editing and recipient.blood_group == 'O+' %}selected{% endif %}>O+</option>
+                <option value="O-" {% if editing and recipient.blood_group == 'O-' %}selected{% endif %}>O-</option>
+            </select>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input
+                type="tel"
+                name="phone"
+                class="form-control"
+                value="{{ recipient.phone if editing and recipient.phone else '' }}"
+            >
+        </div>
+
+        <!-- Hospital -->
+        <div class="mb-3">
+            <label class="form-label">Hospital</label>
+            <select name="hospital_id" class="form-select" required>
+                <option value="">Select hospital</option>
+
+                {% for hospital in hospitals %}
+                <option
+                    value="{{ hospital.hospital_id }}"
+                    {% if editing and recipient.hospital_id == hospital.hospital_id %}selected{% endif %}
+                >
+                    {{ hospital.hospital_id }} - {{ hospital.name }}
+                </option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <!-- Urgency Level -->
+        <div class="mb-3">
+            <label class="form-label">Urgency Level (1–5)</label>
+            <select name="urgency_level" class="form-select" required>
+                {% for level in range(1, 6) %}
+                <option
+                    value="{{ level }}"
+                    {% if editing and recipient.urgency_level == level %}selected
+                    {% elif not editing and level == 3 %}selected
+                    {% endif %}
+                >
+                    {{ level }}
+                    {% if level == 1 %}
+                        - Lowest
+                    {% elif level == 3 %}
+                        - Normal
+                    {% elif level == 5 %}
+                        - Highest
+                    {% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Buttons -->
+        <button type="submit" class="btn btn-primary">
+            {{ "Save Changes" if editing else "Register Recipient" }}
+        </button>
+
+        <a href="{{ url_for('recipients.view_recipients') }}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+</div>
+{% endblock %}

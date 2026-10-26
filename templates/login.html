@@ -1,0 +1,465 @@
+{% extends "base.html" %}
+
+{% block title %}Login | OrganLink{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Login page only */
+    .login-page {
+        min-height: calc(100vh - 120px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 38px 16px;
+    }
+
+    .login-shell {
+        width: 100%;
+        max-width: 1000px;
+        min-height: 540px;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        overflow: hidden;
+        border-radius: 24px;
+        background: #fff;
+        box-shadow: 0 20px 60px rgba(10, 51, 35, 0.12);
+        border: 1px solid rgba(16, 86, 102, 0.10);
+    }
+
+    /* OrganLink illustration panel */
+    .login-visual {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 42px;
+        color: #F7F4D5;
+        background:
+            radial-gradient(circle at 85% 15%,
+                rgba(131, 153, 88, 0.25), transparent 32%),
+            linear-gradient(145deg, #105666 0%, #0A3323 75%);
+    }
+
+    .login-brand {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 20px;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .login-brand img {
+        width: 350px !important;
+        max-width: 100%;
+        height: auto;
+        display: block;
+        transform: translateX(-40px);
+    }
+
+    .visual-content {
+        position: relative;
+        z-index: 2;
+        margin: 35px 0;
+    }
+
+    .visual-eyebrow {
+        color: #C5D39C;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .visual-content h1 {
+        font-size: clamp(34px, 4vw, 49px);
+        font-weight: 800;
+        line-height: 1.08;
+        letter-spacing: -2px;
+        margin-bottom: 20px;
+    }
+
+    .visual-content h1 span {
+        color: #A6B87A;
+    }
+
+    .visual-content p {
+        max-width: 340px;
+        color: rgba(247, 244, 213, 0.8);
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+    /* Donor-to-recipient connection illustration */
+    .organ-art {
+        position: absolute;
+        width: 300px;
+        height: 260px;
+        right: -55px;
+        top: 95px;
+        opacity: 0.28;
+        pointer-events: none;
+    }
+
+    .organ-art .orbit {
+        position: absolute;
+        border: 1px solid #A6B87A;
+        border-radius: 50%;
+        width: 200px;
+        height: 200px;
+        top: 15px;
+        left: 50px;
+    }
+
+    .organ-art .orbit-two {
+        width: 155px;
+        height: 155px;
+        top: 38px;
+        left: 72px;
+    }
+
+    .organ-art .heart {
+        position: absolute;
+        left: 117px;
+        top: 76px;
+        font-size: 61px;
+        color: #D3968C;
+        filter: drop-shadow(0 0 15px rgba(211, 150, 140, 0.5));
+    }
+
+    .connection-line {
+        position: absolute;
+        height: 1px;
+        background: #C5D39C;
+        transform-origin: left center;
+    }
+
+    .line-one {
+        width: 105px;
+        left: 10px;
+        top: 82px;
+        transform: rotate(28deg);
+    }
+
+    .line-two {
+        width: 95px;
+        left: 180px;
+        top: 160px;
+        transform: rotate(-32deg);
+    }
+
+    .node {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border: 3px solid #C5D39C;
+        background: #105666;
+        border-radius: 50%;
+    }
+
+    .node-one {
+        left: 9px;
+        top: 77px;
+    }
+
+    .node-two {
+        right: 15px;
+        top: 105px;
+    }
+
+    .visual-footer {
+        position: relative;
+        z-index: 2;
+        padding-top: 20px;
+        border-top: 1px solid rgba(247, 244, 213, 0.18);
+        color: rgba(247, 244, 213, 0.7);
+        font-size: 11px;
+        line-height: 1.8;
+    }
+
+    /* Login form panel */
+    .login-form-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px;
+        background: #F7F4D5;
+    }
+
+    .form-eyebrow {
+        color: #839958;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .login-heading {
+        color: #0A3323;
+        font-size: 31px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 9px;
+    }
+
+    .login-subtitle {
+        color: #68766B;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 28px;
+    }
+
+    .login-form-panel .form-label {
+        color: #244A3B;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .login-form-panel .form-control {
+        min-height: 47px;
+        border: 1px solid #D8DDC6;
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: #fff;
+        color: #0A3323;
+        font-size: 13px;
+        box-shadow: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .login-form-panel .form-control:focus {
+        border-color: #105666;
+        box-shadow: 0 0 0 3px rgba(16, 86, 102, 0.12);
+    }
+
+    .password-wrap {
+        position: relative;
+    }
+
+    .password-wrap .form-control {
+        padding-right: 72px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 0;
+        background: transparent;
+        color: #105666;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .login-submit {
+        min-height: 48px;
+        margin-top: 8px;
+        border: 0;
+        border-radius: 10px;
+        background: #105666;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .login-submit:hover {
+        background: #0A3323;
+        color: #F7F4D5;
+        transform: translateY(-1px);
+    }
+
+    .login-form-panel .alert {
+        font-size: 12px;
+        border-radius: 10px;
+    }
+
+    .login-note {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: 25px;
+        color: #71806F;
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .login-note-mark {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: #E5EAD7;
+        color: #105666;
+        font-weight: 800;
+    }
+
+    @media (max-width: 768px) {
+        .login-page {
+            padding: 20px 12px;
+        }
+
+        .login-shell {
+            max-width: 480px;
+            grid-template-columns: 1fr;
+        }
+
+        .login-visual {
+            min-height: 280px;
+            padding: 27px;
+        }
+
+        .visual-content {
+            margin: 32px 0 15px;
+        }
+
+        .visual-content h1 {
+            font-size: 35px;
+        }
+
+        .visual-content p {
+            max-width: 290px;
+            font-size: 12px;
+        }
+
+        .organ-art {
+            transform: scale(0.7);
+            transform-origin: top right;
+            right: -95px;
+            top: 55px;
+        }
+
+        .login-form-panel {
+            padding: 32px 27px;
+        }
+
+        .login-heading {
+            font-size: 27px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .login-form-panel .form-control,
+        .login-submit {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <div class="login-shell">
+
+        <section class="login-visual">
+            <div class="login-brand">
+                <img
+                    src="{{ url_for('static', filename='images/organlink-light.png') }}"
+                    alt="OrganLink"
+                    style="width: 300px; max-width: 100%; height: auto;"
+                >
+            </div>
+
+            <div class="organ-art" aria-hidden="true">
+                <div class="orbit"></div>
+                <div class="orbit orbit-two"></div>
+                <div class="connection-line line-one"></div>
+                <div class="connection-line line-two"></div>
+                <div class="node node-one"></div>
+                <div class="node node-two"></div>
+                <div class="heart">♥</div>
+            </div>
+
+            <div class="visual-content">
+                <div class="visual-eyebrow">Donor management &amp; traceability</div>
+                <h1>Every donation.<br><span>Every connection.</span></h1>
+                <p>
+                    Connecting donors, hospitals and recipients through
+                    one platform. Because every donation can make a difference.
+                </p>
+            </div>
+
+            <div class="visual-footer">
+                <strong>One platform. A greater purpose.</strong><br>
+                OrganLink · Donor Management &amp; Traceability System
+            </div>
+        </section>
+
+        <section class="login-form-panel">
+            <div class="form-eyebrow">Welcome back</div>
+            <h2 class="login-heading">Sign in to OrganLink</h2>
+            <p class="login-subtitle">
+                Access your workspace to manage donations, inventory
+                and recipient requests.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show"
+                         role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username"
+                           class="form-control" placeholder="Enter your username"
+                           autocomplete="username" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="password" name="password"
+                               class="form-control" placeholder="Enter your password"
+                               autocomplete="current-password" required>
+                        <button type="button" class="password-toggle"
+                                id="togglePassword" aria-controls="password"
+                                aria-pressed="false">Show</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn login-submit w-100">
+                    Sign in to your workspace <span aria-hidden="true">→</span>
+                </button>
+            </form>
+
+            <div class="login-note">
+                <span class="login-note-mark">♥</span>
+                <span>Your workspace helps connect available donations with people who need them.</span>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const passwordInput = document.getElementById("password");
+    const passwordToggle = document.getElementById("togglePassword");
+
+    if (passwordInput && passwordToggle) {
+        passwordToggle.addEventListener("click", function () {
+            const isPassword = passwordInput.type === "password";
+            passwordInput.type = isPassword ? "text" : "password";
+            passwordToggle.textContent = isPassword ? "Hide" : "Show";
+            passwordToggle.setAttribute("aria-pressed", String(isPassword));
+        });
+    }
+</script>
+{% endblock %}

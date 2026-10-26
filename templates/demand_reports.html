@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Demand Reports | OrganLink{% endblock %}
+{% block content %}
+<div class="container mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Demand Reports</h2>
+            <p class="text-muted mb-0">
+                Overview of recipient requests and allocations.
+            </p>
+        </div>
+        <a href="{{ url_for('requests.view_requests') }}"
+           class="btn btn-outline-secondary">
+            Back to Requests
+        </a>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Total Requests</p>
+                    <h2>{{ request_stats.total_requests }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Pending</p>
+                    <h2 class="text-warning">
+                        {{ request_stats.pending_requests }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Matched</p>
+                    <h2 class="text-primary">
+                        {{ request_stats.matched_requests }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Fulfilled</p>
+                    <h2 class="text-success">
+                        {{ request_stats.fulfilled_requests }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Cancelled</p>
+                    <h2 class="text-secondary">
+                        {{ request_stats.cancelled_requests }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Active Allocations</p>
+                    <h2 class="text-danger">
+                        {{ allocation_stats.active_allocations }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Requests by Type</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th class="text-end">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in type_stats %}
+                            <tr>
+                                <td>{{ item.request_type|title }}</td>
+                                <td class="text-end">
+                                    {{ item.request_count }}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center">
+                                    No request data available.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Requests by Urgency</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Urgency Level</th>
+                                <th class="text-end">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in urgency_stats %}
+                            <tr>
+                                <td>{{ item.urgency_level }}/5</td>
+                                <td class="text-end">
+                                    {{ item.request_count }}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center">
+                                    No request data available.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a href="{{ url_for('requests.view_waitlist') }}"
+           class="btn btn-outline-primary">
+            View Waitlist
+        </a>
+    </div>
+</div>
+{% endblock %}

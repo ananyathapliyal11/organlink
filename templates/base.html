@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}OrganLink{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --midnight-green: #105666;
+            --moss-green: #839958;
+            --beige: #F7F4D5;
+            --rosy-brown: #D3968C;
+            --dark-green: #0A3323;
+            --page-bg: #F8F8F0;
+            --text-main: #173F38;
+            --text-muted: #6B796C;
+            --card-border: rgba(16, 86, 102, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text-main);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .navbar {
+            background: var(--dark-green);
+            padding: 8px 0;
+            box-shadow: 0 4px 22px rgba(10, 51, 35, 0.13);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            padding: 0;
+            margin-right: 20px;
+        }
+
+        .navbar-logo {
+            height: 60px;
+            width: auto;
+            max-width: 150px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .brand-mark {
+            width: 39px;
+            height: 39px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--moss-green);
+            color: var(--dark-green);
+            border-radius: 13px;
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .navbar .nav-link {
+            color: rgba(247, 244, 213, 0.82) !important;
+            padding: 10px 13px !important;
+            border-radius: 10px;
+            font-size: 0.91rem;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus {
+            background: rgba(131, 153, 88, 0.22);
+            color: var(--beige) !important;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 1440px;
+            flex: 1;
+            padding-top: 38px;
+            padding-bottom: 55px;
+        }
+
+        .page-heading {
+            color: var(--dark-green);
+            font-weight: 800;
+            letter-spacing: -1.2px;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .btn {
+            border-radius: 11px;
+            padding: 10px 17px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary,
+        .btn-success {
+            background: var(--midnight-green);
+            border-color: var(--midnight-green);
+            color: white;
+        }
+
+        .btn-primary:hover,
+        .btn-success:hover {
+            background: var(--dark-green);
+            border-color: var(--dark-green);
+            color: white;
+        }
+
+        .btn-outline-primary,
+        .btn-outline-success {
+            color: var(--midnight-green);
+            border-color: var(--midnight-green);
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-success:hover {
+            background: var(--midnight-green);
+            border-color: var(--midnight-green);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--rosy-brown);
+            border-color: var(--rosy-brown);
+            color: var(--dark-green);
+        }
+
+        .btn-danger:hover {
+            background: #c27f75;
+            border-color: #c27f75;
+            color: var(--dark-green);
+        }
+
+        .btn-outline-danger {
+            color: #a85f55;
+            border-color: var(--rosy-brown);
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--rosy-brown);
+            border-color: var(--rosy-brown);
+            color: var(--dark-green);
+        }
+
+        .card {
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            box-shadow: 0 5px 22px rgba(10, 51, 35, 0.045);
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid #D9DFCC;
+            border-radius: 10px;
+            padding: 10px 13px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--moss-green);
+            box-shadow: 0 0 0 0.2rem rgba(131, 153, 88, 0.18);
+        }
+
+        .table thead th {
+            background: var(--beige);
+            color: var(--dark-green);
+            font-size: 0.86rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .table > :not(caption) > * > * {
+            padding: 13px 14px;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 12px;
+        }
+
+        footer {
+            background: var(--dark-green);
+            color: rgba(247, 244, 213, 0.75);
+            text-align: center;
+            padding: 23px 16px;
+            font-size: 0.87rem;
+        }
+
+        footer strong {
+            color: var(--beige);
+        }
+
+        @media (max-width: 991px) {
+            .navbar .nav-link {
+                margin-top: 3px;
+            }
+
+            .main-content {
+                padding-top: 25px;
+            }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    {% if request.endpoint != 'login' %}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+                <img
+                    src="{{ url_for('static', filename='images/organlink.png') }}"
+                    alt="OrganLink"
+                    class="navbar-logo"
+                >
+            </a>
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                {% if session.get('username') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('donors') }}">Donors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('donations') }}">Donations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('inventory') }}">Inventory</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('recipients.view_recipients') }}">Recipients</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('requests.view_requests') }}">Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('requests.view_waitlist') }}">Waitlist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('requests.demand_reports') }}">Demand Reports</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Log out ↗</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="container-fluid main-content px-3 px-lg-5">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <strong>OrganLink</strong> · Donor Management &amp; Traceability System
+        <div class="mt-1">Connecting donations with the people who need them.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+
+</html>

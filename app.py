@@ -13,7 +13,6 @@ from db import get_db_connection
 from module_b.recipients import recipients_bp
 from module_b.requests import requests_bp
 from datetime import date
-
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-key-change-this")
 app.register_blueprint(recipients_bp)
